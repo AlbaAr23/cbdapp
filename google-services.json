@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "731458482044",
+    "project_id": "cbdapp-35a22",
+    "storage_bucket": "cbdapp-35a22.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731458482044:android:ecbd51da94e3e1d465bef9",
+        "android_client_info": {
+          "package_name": "com.example.cbdapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGMXUxnKzBYoHa2ha7H-vWJXPU_NBUiX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
