@@ -30,6 +30,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             DESC + " TEXT, " +
             CAT + " TEXT, " +
             IMG + " TEXT );";
+    public static final String CREATE_TABLE_CONFIG = "create table " + TABLE_NAME + "(" +
+            _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            TITLE + " TEXT NOT NULL, " +
+            DESC + " TEXT);";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
