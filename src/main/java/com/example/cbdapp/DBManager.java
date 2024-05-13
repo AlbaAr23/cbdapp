@@ -150,12 +150,40 @@ public class DBManager {
 
 
     }
+    public void fillConfig(Activity context,String title, String desc) throws IOException {
+
+            ContentValues contentValue = new ContentValues();
+            contentValue.put(DatabaseHelper.TITLE, title);
+            contentValue.put(DatabaseHelper.DESC, desc);
+            database.insert(DatabaseHelper.TABLE_NAME_CONFIG, null, contentValue);
+
+
+    }
     public void drop(){
         database.execSQL("DROP TABLE IF EXISTS " + DatabaseHelper.TABLE_NAME);
         database.execSQL(DatabaseHelper.CREATE_TABLE);
     }
+    public void config() {
+        database.execSQL(DatabaseHelper.CREATE_TABLE_CONFIG);
+    }
+    public boolean checkconfig() {
+       // database.execSQL("DROP TABLE IF EXISTS " + DatabaseHelper.TABLE_NAME_CONFIG);
+        String query = "select DISTINCT tbl_name from sqlite_master where tbl_name = '"+DatabaseHelper.TABLE_NAME_CONFIG+"'";
+        try (Cursor cursor = database.rawQuery(query, null)) {
+            if(cursor!=null) {
+                if(cursor.getCount()>0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
     public void delete(long _id) {
         database.delete(DatabaseHelper.TABLE_NAME, DatabaseHelper._ID + "=" + _id, null);
+    }
+    public void filltrad(String lang){
+        dbHelper.onCreateTrad(database,lang);
+
     }
 
 }

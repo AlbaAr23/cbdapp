@@ -34,6 +34,7 @@ import okhttp3.Response;
 @SuppressLint("CustomSplashScreen")
 public class Splashscreen extends Activity implements AdapterView.OnItemSelectedListener {
     private static int SPLASH_TIMER = 3000;
+    private ArrayList<String> idiomas;
     @Override
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,17 +42,31 @@ public class Splashscreen extends Activity implements AdapterView.OnItemSelected
 
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_splash);
-//get the spinner from the xml.
         Spinner dropdown = findViewById(R.id.spinner1);
-//create a list of items for the spinner.
-        String[] items = getLanguages();
-//create an adapter to describe how the items are displayed, adapters are used in several places in android.
-//There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-//set the spinners adapter to the previously created one.
-        dropdown.setAdapter(adapter);
-        dropdown.setOnItemSelectedListener(this);
+        DBManager db=new DBManager(this);
+        db.open();
+        if(db.checkconfig()) {
 
+            String[] items = getLanguages();
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+            dropdown.setAdapter(adapter);
+            dropdown.setOnItemSelectedListener(this);
+            db.close();
+        }else{
+            dropdown.setVisibility(View.INVISIBLE);
+            //TODO: Consulta languaje actual lang
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Intent i = new Intent(Splashscreen.this,WebActivity.class);
+                    //TODO: pasar lang
+                    i.putExtra("lang","FirstKeyValue");
+                    startActivity(i);
+                    finish();
+                }
+            },SPLASH_TIMER);
+        }
         /**/
     }
     private String[] getLanguages(){
@@ -63,7 +78,7 @@ public class Splashscreen extends Activity implements AdapterView.OnItemSelected
                 .url("https://apertium.org/apy/listPairs")
                 .method("GET", null)
                 .build();
-        ArrayList<String> idiomas=new ArrayList();
+        this.idiomas=new ArrayList();
         try {
             Response response = client.newCall(request).execute();
             String bodyStr = response.body().string();
@@ -76,7 +91,7 @@ public class Splashscreen extends Activity implements AdapterView.OnItemSelected
                 if(fuente.equals("spa")){
                     String target=((JSONObject)(array.get(i))).get("targetLanguage").toString();
                     if(target.length()<4){
-                   idiomas.add(target );
+                        this.idiomas.add(target );
                     }
                 }
             }
@@ -85,10 +100,11 @@ public class Splashscreen extends Activity implements AdapterView.OnItemSelected
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        for(String language:idiomas){
+        for(String language:this.idiomas){
             Log.d("ADebugTag","spa-"+language);
         }
-        return this.getnombres(idiomas.toArray(new String[0]));
+
+        return this.getnombres(this.idiomas.toArray(new String[0]));
     }
     private String[] getnombres(String[] codigos){
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -117,14 +133,26 @@ public class Splashscreen extends Activity implements AdapterView.OnItemSelected
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        new Handler().postDelayed(new Runnable() {
+        DBManager db=new DBManager(this);
+        db.open();
+       // db.config();
+        String desc=parent.getItemAtPosition(position).toString();
+        String title=this.idiomas.get(position);
+        try {
+            db.fillConfig(this, title, desc);
+            //TODO: traducir lang title
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        db.close();
+      /*  new Handler().postDelayed(new Runnable() {
             @Override
-            public void run() {
+            public void run() {*/
                 Intent i = new Intent(Splashscreen.this,WebActivity.class);
-                startActivity(i);
-                finish();
-            }
-        },SPLASH_TIMER);
+               startActivity(i);
+               finish();
+         /*   }
+        },SPLASH_TIMER);*/
     }
 
     @Override

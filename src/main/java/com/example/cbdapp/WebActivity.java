@@ -101,9 +101,11 @@ public class WebActivity extends AppCompatActivity {
 
             DBManager db=new DBManager(this);
             db.open();
+            //TODO: recibir lang
             db.drop();
             try {
                 db.fillDatabase(this,this.getAssets().open("productos2.csv"));
+                //db.filltrad( lang);
             }catch(Exception e){
                 Toast.makeText(this,"Error : " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -169,6 +171,7 @@ public class WebActivity extends AppCompatActivity {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             Toast.makeText(getApplicationContext(), "Failed loading app!", Toast.LENGTH_SHORT).show();
         }
+        @SuppressLint("Range")
         public WebResourceResponse shouldInterceptRequest(WebView view,
                                                           WebResourceRequest request) {
             String url = request.getUrl().toString();

@@ -8,7 +8,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Table Name
     public static final String TABLE_NAME = "PRODUCTOS";
-
+    public static final String TABLE_NAME_CONFIG = "CONFIG";
     // Table columns
 
 
@@ -30,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             DESC + " TEXT, " +
             CAT + " TEXT, " +
             IMG + " TEXT );";
-    public static final String CREATE_TABLE_CONFIG = "create table " + TABLE_NAME + "(" +
+    public static final String CREATE_TABLE_CONFIG = "create table " + TABLE_NAME_CONFIG + "(" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             TITLE + " TEXT NOT NULL, " +
             DESC + " TEXT);";
@@ -43,6 +43,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL(CREATE_TABLE);
+    }
+    public void onCreateTrad(SQLiteDatabase db, String lang) {
+       String TABLE_NAME_LANG=TABLE_NAME +"_"+lang;
+        String CREATE_TABLE_lang = "create table " + TABLE_NAME_LANG+ "(" +
+                _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TITLE + " TEXT NOT NULL, " +
+                DESC + " TEXT, " +
+                CAT + " TEXT, " +
+                IMG + " TEXT );";
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_LANG);
+        db.execSQL(CREATE_TABLE_lang);
     }
 
     @Override
